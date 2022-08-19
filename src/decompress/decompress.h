@@ -28,5 +28,8 @@ char * decompress_str(char * str, int len);
 // Decompress a chr and returns its decompress version
 char * decompress_chr(char c, char * str_number);
 
+// Verify whether the given character is a digit
+int is_digit(char c);
+
 #endif
 

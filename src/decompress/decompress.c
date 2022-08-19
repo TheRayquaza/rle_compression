@@ -1,7 +1,7 @@
 /*
  * =====================================================================================
  *
- *       Filename:  compress.c
+ *       Filename:  decompress.c
  *
  *    Description: Decoompress a file (compressed with RLE) 
  *
@@ -25,15 +25,14 @@
 // Compress a given file, return the sucess of the compress process
 int decompress(char * filename)
 {
-    char tmp[] = ".decompress";
-    char * new_name = concat_str(filename, tmp);
+    char * new_name = concat_str(filename, ".deco");
 
     if (file_exist(new_name) == 1)
     {
         char answer;
 
         printf("%s already exists, would you like to delete this file ? [Y/N]\n", new_name);
-        scanf("%c", &answer);
+        scanf(" %c", &answer);
         // Yes anwser : delete the file
         if (answer == 'Y')
         {
@@ -52,7 +51,7 @@ int decompress(char * filename)
     }
     
     FILE * f = fopen(filename, "r");
-    FILE * out = fopen(new_name, "w+");
+    FILE * out = fopen(new_name, "w");
     
     char * line = NULL;
     size_t len = 0;
@@ -67,7 +66,7 @@ int decompress(char * filename)
             free(tmp);
         }
         
-        printf("--> %s compressed and stored in %s \n",filename ,new_name);
+        printf("--> %s decompressed and stored in %s \n",filename,new_name);
 
         fclose(f);
         fclose(out);
@@ -77,6 +76,8 @@ int decompress(char * filename)
     }
     else
     {
+        fclose(f);
+        fclose(out);
         printf("An issue occured while opening the file %s\n", filename);
         return 0;
     }
@@ -93,28 +94,22 @@ char * decompress_str(char * str, int len)
     while (i < len)
     {
         // Getting the number of repeated characters
-        if (str[i] == '\n')
-        {
-            decompressed = append_chr(decompressed, '\n');
+        char * str_number = malloc(sizeof(char));
+        str_number[0] = '\0';
+        while (i < len && is_digit(str[i]))
+        { 
+            str_number = append_chr(str_number, str[i]);
             i++;
         }
-        else 
-        {
-            char * str_number = malloc(0);
-            int count = 0;
-            while (i < len && ((int) str[i]) - 48 >= 0 && ((int) str[i]) - 48 <= 9)
-            {
-                count++;
-                i++;
-            }
-            // Writting in the buffer the number of character
-            char * tmp = decompress_chr(str[i], str_number);
-            for (int j = 0; tmp[j] != '\0'; j++)
-                decompressed = append_chr(decompressed, tmp[j]);
-            // Free buffers
-            free(tmp);
-            free(str_number);
-        }
+        str_number = append_chr(str_number, '\0');
+        // Writting in the buffer the number of character
+        char * tmp = decompress_chr(str[i], str_number);
+        for (int j = 0; tmp[j] != '\0'; j++)
+            decompressed = append_chr(decompressed, tmp[j]);
+        // Free buffers
+        free(tmp);
+        free(str_number);
+        i++;
     }
 
     return decompressed;
@@ -132,5 +127,14 @@ char * decompress_chr(char c, char * str_number)
     for (i = 0; i < number; i++)
         result = append_chr(result, c);
 
+    result = append_chr(result, '\0');
+
     return result;
 }
+
+int is_digit(char c)
+{
+    int value = ((int) c) - 48;
+    return value >= 0 && value <= 9;
+}
+

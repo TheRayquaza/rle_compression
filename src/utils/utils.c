@@ -78,30 +78,47 @@ char * append_chr(char * str, char c)
     tmp[len] = c;
     tmp[len+1] = '\0';
 
-    //free(str);
-
     return tmp;
 }
 
-// 
+//Concat two strings 
 char * concat_str(char * str1, char * str2)
 {
     size_t i = 0;
     size_t len1 = strlen(str1);
     size_t len2 = strlen(str2);
     size_t len  = len1 + len2;
-    char * str = calloc(len, sizeof(char));
+    char * str = calloc(len+1, sizeof(char));
     
     for (i = 0; i < len1; i++)
         str[i] = str1[i];
     for (i = len1; i < len; i++)
         str[i] = str2[i - len1];
 
-    str[len1 + len2] = '\0';
+    str[len] = '\0';
 
     return str;
 }
 
+// Remove the last null byte
+char * remove_null_byte(char * str)
+{
+    int i = 0;
+    size_t len = strlen(str);
+    if (len == 0)
+        return str;
+    else
+    {
+        char * buffer = malloc(sizeof(char) * (len-1));
+        while (str[i] != '\0')
+        {
+           buffer[i] = str[i];
+           i++;
+        }
+        return buffer;
+    }
+}
+// Verify whether a file exist
 int file_exist(char * filename)
 {
     FILE * f = fopen(filename, "r");

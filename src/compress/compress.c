@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "../utils/utils.h"
 #include "compress.h"
@@ -33,7 +34,7 @@ int compress(char * filename)
         char answer;
 
         printf("%s already exists, would you like to delete this file ? [Y/N]\n", new_name);
-        scanf("%c", &answer);
+        scanf(" %c", &answer);
         // Yes anwser : delete the file
         if (answer == 'Y')
         {
@@ -52,7 +53,7 @@ int compress(char * filename)
     }
     
     FILE * f = fopen(filename, "r");
-    FILE * out = fopen(new_name, "w+");
+    FILE * out = fopen(new_name, "w");
     
     char * line = NULL;
     size_t len = 0;
@@ -64,6 +65,7 @@ int compress(char * filename)
         {
             char * tmp = compress_str(line, len);
             fputs(tmp, out);
+            //fwrite(tmp, sizeof(char), strlen(tmp), out);
             free(tmp);
         }
         
@@ -81,7 +83,6 @@ int compress(char * filename)
         return 0;
     }
     return 1;
- 
 }
 
 // Compress a given string 
@@ -96,9 +97,18 @@ char * compress_str(char * str, int len)
         char current = str[i];
         if (current == '\n')
         {
+            compressed = append_chr(compressed, '1');
             compressed = append_chr(compressed, '\n');
             i++;
         }
+        else if (current == '\r')
+        {
+            compressed = append_chr(compressed, 1);
+            compressed = append_chr(compressed, '\r');
+            i++;
+        }
+        else if ((int) current - '!' < 0)
+            i++;
         else 
         {
             int count = 0;
@@ -114,7 +124,7 @@ char * compress_str(char * str, int len)
             compressed = append_chr(compressed, current);
         }
     }
-
+    compressed = append_chr(compressed, '\0');
     return compressed;
 }
 

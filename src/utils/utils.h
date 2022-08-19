@@ -33,6 +33,9 @@ char * append_chr(char * str, char c);
 // Concat two strings into a single one
 char * concat_str(char * str1, char * str2);
 
+// Remove the last character of a string
+char * remove_null_byte(char * str);
+
 // Verify whether a file exists
 int file_exist(char * filename);
 
