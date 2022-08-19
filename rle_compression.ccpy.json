@@ -1,0 +1,18 @@
+{
+    "PATH": "/mnt/c/Users/mateo/OneDrive/Source/Personal/rle_compression",
+    "NAME": "rle_compression",
+    "COMPILER": "gcc",
+    "FLAGS": [
+        "-Wall",
+        "-Wextra",
+        "-O3",
+        "-g"
+    ],
+    "LIBRARIES": [],
+    "SRC": [
+        "src"
+    ],
+    "IGNORED": [],
+    "OUT": "rle_compression",
+    "BUILD": "build"
+}
